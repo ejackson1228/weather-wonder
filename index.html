@@ -10,24 +10,24 @@
     <link src="./Assets/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container row bg-primary bg-gradient">
+    <div class="container-fluid row bg-primary bg-gradient">
         <header class="col-12">
         <h1 id="page-header" class="text-center text-warning">Weather Dashboard</h1>
         </header>
     </div>
     
     <div class="container col-3 float-start">
-        <div id="search-form" class="row">
+        <div id="search-form" class="row col-12 border-bottom border-dark m-2">
             <h5 class="text-center">Search for a City:</h5>
-            <form id="city-submit" class="">
+            <form id="city-submit" class="p-2">
                 <input type="text" id="city" placeholder="Search a City..." class="col-12">
             </form>
-            <button id="city-submit-button" class="btn btn-success btn-sm col-12" type="button">Search</button>
+            <button id="city-submit-button" class="btn btn-success btn-sm m-2 col-11 " type="button">Search</button>
         </div>
 
-        <div id="searched-cities" class="row">
+        <div id="searched-cities" class="row m-2">
             <ul id="previous-cities" class="">
-
+                <li class="">previous city searched</li>
             </ul>
         </div>
        
