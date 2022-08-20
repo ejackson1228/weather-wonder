@@ -1,46 +1,53 @@
 var cityInputEl = document.getElementById("city");
 
-var formatApiResponse = function(city){
+var getWeatherConditions = function(city){
     var locationLimit = 1;
-    var apiUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=" + locationLimit + "&appid=ef60850d396977a8d1f7bb3a7e730be4";
     
-    console.log(fetch(apiUrl));
-    
-    fetch(apiUrl)
-    .then((response) => response.text()) 
-    .then((text) => {
-        console.log(text);
-        var cityLat = text[Object[3]];
-        var cityLon = text[Object[4]];
-        console.log(cityLat, cityLon);
+    fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&limit=' + locationLimit + '&appid=8a42d43f7d7dc180da5b1e51890e67dc')
+    .then(function (res) {
+        return res.json();
+    })
+    .then(function (data) {
+        console.log(data);
+        return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=8a42d43f7d7dc180da5b1e51890e67dc`)
+    })
+    .then(function (res) {
+        return res.json();
+    })
+    .then(function (data) {
+        console.log(data);
+        displayCurrentConditions(city, data);
     });
-        
-        
-    
-
 }
 
-var getWeatherConditions = function() {
 
 
-    var apiUrlCoordinates = "https://api.openweathermap.org/data/2.5/onecall?lat=" + "35.227085" + "&lon=" + "-80.843124" + "&appid=ef60850d396977a8d1f7bb3a7e730be4";
-    console.log(fetch(apiUrlCoordinates));
+var displayCurrentConditions = function (city, data) {
+
+    var currentHeader = document.querySelector("#current-header");
+    currentHeader.textContent = "Displaying Current Weather for: " + city.toUpperCase();
+
     
-    fetch(apiUrlCoordinates)
-    .then(function(response) {
-        //request was succesful
-        if (response.ok) {
-            response.json().then(function(data) {
-                displayWeatherConditions(data, );
-            });
-        } else {
-            alert("Error: Please Enter a Valid City.");
-        }
-    })
-    .catch(function(error) {
-        alert("Unable to Connect to Weather API");
-    });
+
+
 };
+// var getWeatherConditions = function() {
+    
+//     fetch(apiUrlCoordinates)
+//     .then(function(response) {
+//         //request was succesful
+//         if (response.ok) {
+//             response.json().then(function(data) {
+//                 displayWeatherConditions(data, );
+//             });
+//         } else {
+//             alert("Error: Please Enter a Valid City.");
+//         }
+//     })
+//     .catch(function(error) {
+//         alert("Unable to Connect to Weather API");
+//     });
+// };
 
 var formSubmitHandler = function(event) {
     // prevent page from refreshing
@@ -50,7 +57,7 @@ var formSubmitHandler = function(event) {
     console.log(cityName);
     if (cityName) {
         // pass cityName to getWeatherConditions function
-        formatApiResponse(cityName);
+        getWeatherConditions(cityName);
 
         // clear old content
         cityInputEl.value = "";
@@ -59,9 +66,7 @@ var formSubmitHandler = function(event) {
     };
 };
 
-var displayWeatherConditions = function () {
 
-};
 
 
 
