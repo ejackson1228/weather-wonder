@@ -4,30 +4,38 @@ var getWeatherConditions = function(city){
     var locationLimit = 1;
     
     fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&limit=' + locationLimit + '&appid=8a42d43f7d7dc180da5b1e51890e67dc')
-    .then(function (res) {
-        return res.json();
+    .then(function (response) {
+        return response.json();
     })
     .then(function (data) {
         console.log(data);
         return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=8a42d43f7d7dc180da5b1e51890e67dc`)
     })
-    .then(function (res) {
-        return res.json();
+    .then(function (response) {
+        return response.json();
     })
     .then(function (data) {
         console.log(data);
+        // send city & it's data to display current conditions function
         displayCurrentConditions(city, data);
+        
     });
 }
 
 
 
 var displayCurrentConditions = function (city, data) {
-
     var currentHeader = document.querySelector("#current-header");
     currentHeader.textContent = "Displaying Current Weather for: " + city.toUpperCase();
 
-    
+    var currentContainer = document.querySelector("#current-weather");
+    currentContainer.append(currentConditions);
+
+    var currentConditions = document.createElement("ul");
+    var currentTemp = document.createElement("li");
+    currentTemp.textContent = "Temp: " + data.current.temp ; // <<< needs to be translated to string to display as text content
+    currentConditions.append(currentTemp);
+
 
 
 };
