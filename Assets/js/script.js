@@ -9,7 +9,7 @@ var getWeatherConditions = function(city){
     })
     .then(function (data) {
         console.log(data);
-        return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=8a42d43f7d7dc180da5b1e51890e67dc`)
+        return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&units=imperial&appid=8a42d43f7d7dc180da5b1e51890e67dc`)
     })
     .then(function (response) {
         return response.json();
@@ -20,42 +20,60 @@ var getWeatherConditions = function(city){
         displayCurrentConditions(city, data);
         
     });
+
+    fetch('https://api.openweathermap.org/data/2.5/forecast/daily?q=' + city + '&limit=' + locationLimit + '&appid=8a42d43f7d7dc180da5b1e51890e67dc')
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log(data)
+        
+    })
+    
+    
 }
 
 
 
 var displayCurrentConditions = function (city, data) {
-    var currentHeader = document.querySelector("#current-header");
+    var currentHeader = document.getElementById("current-header");
     currentHeader.textContent = "Displaying Current Weather for: " + city.toUpperCase();
 
-    var currentContainer = document.querySelector("#current-weather");
-    currentContainer.append(currentConditions);
-
+    var currentContainer = document.getElementById("current-weather");
     var currentConditions = document.createElement("ul");
+    currentConditions.className = ".current-conditions-list";
+    currentContainer.appendChild(currentConditions);
+
+    var currentIcon = document.createElement("li");
+    currentConditions.appendChild(currentIcon);
+    currentIcon.textContent = data.current.weather.icon; //<<< figure out how to put weather icon 
+    
+    var currentDate = document.createElement("li");
+    currentConditions.appendChild(currentDate);
+    currentDate.textContent = data.current.date; // <<< figure out how to input current date (moment.js?)
+
     var currentTemp = document.createElement("li");
-    currentTemp.textContent = "Temp: " + data.current.temp ; // <<< needs to be translated to string to display as text content
-    currentConditions.append(currentTemp);
+    currentConditions.appendChild(currentTemp);
+    currentTemp.textContent = data.current.temp + "°F";
+    
+    var currentHumidity = document.createElement("li");
+    currentConditions.appendChild(currentHumidity);
+    currentHumidity.textContent = data.current.humidity + " kg/m^3";
+
+    var currentWind = document.createElement("li");
+    currentConditions.appendChild(currentWind);
+    currentWind.textContent = data.current.wind_speed + " MPH";
+    
+    var currentUVI = document.createElement("li");
+    currentConditions.appendChild(currentUVI);
+    currentUVI.textContent = data.current.uvi;
+    
+   
 
 
 
 };
-// var getWeatherConditions = function() {
-    
-//     fetch(apiUrlCoordinates)
-//     .then(function(response) {
-//         //request was succesful
-//         if (response.ok) {
-//             response.json().then(function(data) {
-//                 displayWeatherConditions(data, );
-//             });
-//         } else {
-//             alert("Error: Please Enter a Valid City.");
-//         }
-//     })
-//     .catch(function(error) {
-//         alert("Unable to Connect to Weather API");
-//     });
-// };
+// var displayForecast = function
 
 var formSubmitHandler = function(event) {
     // prevent page from refreshing
