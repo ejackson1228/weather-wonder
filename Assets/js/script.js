@@ -1,8 +1,13 @@
 var cityInputEl = document.getElementById("city");
 var locationLimit = 1;
+const searchedCities = [];
+var savedCities = JSON.parse(localStorage.getItem("cities"));
+// savedCities.forEach(function(cityObject) {
+//     displayCurrentConditions(cityObject.data);
+// });
 
 var getWeatherConditions = function(city){
-    
+    var city = city.toLowerCase();
     fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&limit=' + locationLimit + '&appid=ef60850d396977a8d1f7bb3a7e730be4')
     .then(function (response) {
         return response.json();
@@ -19,16 +24,43 @@ var getWeatherConditions = function(city){
         // send city & it's data to display current conditions function
         displayCurrentConditions(city, data);
         displayForecast(city, data);
+        // save this info to local storage
+        var savedCities = JSON.parse(localStorage.getItem("cities"));
+        if (!savedCities) 
+            savedCities = [];
+
+
+        var alreadyInStorage = false;
+        savedCities.forEach(function(item) {
+            var name = item.name;
+            if (name === city) {
+                alreadyInStorage = true;
+            }
+        });
+
+        // if there isn't a match
+        if (!alreadyInStorage) {
+        // add them to storage
+        savedCities.push({
+            name: city,
+            data: data
+        });
+    }
+        localStorage.setItem("cities", JSON.stringify(savedCities));
     });
 }
 
 var displayCurrentConditions = function (city, data) {
-    var currentHeader = document.getElementById("current-header");
-    currentHeader.textContent = "Displaying Current Weather for: " + city.toUpperCase();
-
+    var currentHeader = document.createElement("h6");
+    currentHeader.textContent = "Displaying Current Weather for: " + city;
+    currentHeader.id = "current-header";
     var currentContainer = document.getElementById("current-weather");
+    currentContainer.appendChild(currentHeader);
+
+    
     var currentConditions = document.createElement("ul");
-    currentConditions.className = ".current-conditions-list";
+    currentConditions.className = "card";
+    currentConditions.id  = "current-conditions";
     currentContainer.appendChild(currentConditions);
 
     var currentIcon = document.createElement("li");
@@ -55,26 +87,33 @@ var displayCurrentConditions = function (city, data) {
     currentConditions.appendChild(currentUVI);
     currentUVI.textContent = data.current.uvi;
 
-    if (data.current.uvi > 0 && data.current.uvi < 3) {
+    if (data.current.uvi < 3) {
         currentUVI.className = "text-success";
     }
     if (data.current.uvi >= 3 && data.current.uvi < 8) {
         currentUVI.className = "text-warning";
     }
-    else {
+    if (data.current.uvi >= 8) {
         currentUVI.className = "text-danger";
     }
 
 };
 
 var displayForecast = function(city, data) {
-    var forecastHeader = document.getElementById("forecast-header");
+    var forecastHeader = document.createElement("h6");
     forecastHeader.textContent = "Displaying Forecast for: " + city;
-
+    forecastHeader.id = "forecast-header";
+    var forecastContainerIndex = document.getElementById("forecast");
+    forecastContainerIndex.appendChild(forecastHeader);
+    
     //// day 1 of forecast ////
-    var forecastContainer = document.getElementById("forecast");
+    
+    var forecastContainer = document.createElement("div");
+    forecastContainer.id = "forecast-container";
+    forecastContainer.className = "d-flex";
+    forecastContainerIndex.appendChild(forecastContainer);
     var forecastConditions1 = document.createElement("ul");
-    forecastConditions1.className = "forecast-conditions-list";
+    forecastConditions1.classList = "forecast-list list-group-flush";
     forecastContainer.appendChild(forecastConditions1);
 
     var forecastIcon1 = document.createElement("li");
@@ -210,8 +249,6 @@ var formSubmitHandler = function(event) {
     if (cityName) {
         // pass cityName to getWeatherConditions function
         getWeatherConditions(cityName);
-        //save city to local storage 
-        
         // clear old content
         cityInputEl.value = "";
     } else {
@@ -219,28 +256,39 @@ var formSubmitHandler = function(event) {
     };
 };
 
-var searchedCities = [];
+var displaySearches = function() {
+    var buttonList = document.getElementById("previous-cities");
+    savedCities.forEach(function(cityObject) {
+        var searchedButton = document.createElement("li");
+        for (let i=0; i < savedCities.length ; i++) {
+            var cityName = savedCities[i].name ; // <<<<< need to get appropriate name for each button 
+            searchedButton.innerHTML = "<button type='button' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + cityName + "</button>";
+        }
+        // var cityName = searchedCities.name; ///// <<<< need to get names from object arrays into each generated element
+        // searchedButton.textContent = cityName;
+        searchedButton.className = "previously-searched";
+        buttonList.append(searchedButton);
+    });
 
-var saveCities = function () {
-    localStorage.setItem("cities", searchedCities);
+};
+displaySearches();
+
+
+
+
+var clearResults = function() {
+    var clearCurrent = document.getElementById("current-conditions");
+    clearCurrent.remove();
+
+    var clearCurrentHeader = document.querySelector("#current-header");
+    clearCurrentHeader.remove();
+
+    var clearForecast = document.getElementById("forecast-container");
+    clearForecast.remove();
+
+    var clearForecastHeader = document.querySelector("#forecast-header")
+    clearForecastHeader.remove();
 }
-
-var loadCities = function() {
-
-}
-
-// var previousSearches = function() {
-//     localStorage.getItem(cityName);
-//     console.log(cityName);
-//     var previousCityList = document.getElementById("previous-cities");
-//     if (cityInputEl.value) {
-//         var previousButtons = document.createElement("button")
-//         previousCityList.appendChild(previousButtons);
-//         previousButtons.textContent = cityName;
-//     }
-// }
-
-
 
 
 
@@ -250,6 +298,9 @@ var loadCities = function() {
 
 
 var searchedCity = document.querySelector("#search-form");
+var clearContent = document.querySelector("#clear-content")
+var reload = document.getElementsByClassName("previous-cities");
 
 searchedCity.addEventListener("click", formSubmitHandler);
+clearContent.addEventListener("click", clearResults);
 

@@ -2,7 +2,7 @@
     border-bottom: solid black;
 }
 
-.current-conditions-list {
+.forecast-list {
     list-style-type: none;
     color: blue;
 }
