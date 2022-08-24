@@ -1,4 +1,5 @@
 var cityInputEl = document.getElementById("city");
+var cityButtonEl = document.getElementsByClassName("previously-searched");
 var locationLimit = 1;
 const searchedCities = [];
 var savedCities = JSON.parse(localStorage.getItem("cities"));
@@ -249,24 +250,40 @@ var formSubmitHandler = function(event) {
     if (cityName) {
         // pass cityName to getWeatherConditions function
         getWeatherConditions(cityName);
-        // clear old content
+        // clear old form content
         cityInputEl.value = "";
     } else {
          //alert("Error: Please Enter a Valid City.");
     };
 };
 
+var buttonSubmitHandler = function(e) {
+    
+    if (!e.target.matches("button")) {
+        return
+        // pass name of city in button to getWeatherConditions function
+    }
+    // } else {
+        
+    
+    var btn = e.target;
+    var cityName = btn.getAttribute("data-search");
+    console.log(btn)
+    
+    console.log(cityName);// JSON.stringify(cityButtonEl.textContent);
+    getWeatherConditions(cityName);
+}
+
 var displaySearches = function() {
     var buttonList = document.getElementById("previous-cities");
-    savedCities.forEach(function(cityObject) {
-        var searchedButton = document.createElement("li");
-        for (let i=0; i < savedCities.length ; i++) {
-            var cityName = savedCities[i].name ; // <<<<< need to get appropriate name for each button 
-            searchedButton.innerHTML = "<button type='button' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + cityName + "</button>";
-        }
-        // var cityName = searchedCities.name; ///// <<<< need to get names from object arrays into each generated element
-        // searchedButton.textContent = cityName;
-        searchedButton.className = "previously-searched";
+    savedCities.forEach(function(object) {
+        console.log(object);
+        // var city = JSON.stringify(object.name);
+        // if (city) {
+            var searchedButton = document.createElement("li");  // <<<<< need to get appropriate name for each button 
+            searchedButton.innerHTML = "<button type='button' data-search='" + object.name + "' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + object.name + "</button>";
+           // searchedButton.setAttribute("data-search", object.name);
+        // }
         buttonList.append(searchedButton);
     });
 
@@ -299,8 +316,8 @@ var clearResults = function() {
 
 var searchedCity = document.querySelector("#search-form");
 var clearContent = document.querySelector("#clear-content")
-var reload = document.getElementsByClassName("previous-cities");
+var reload = document.getElementById("searched-cities");
 
 searchedCity.addEventListener("click", formSubmitHandler);
 clearContent.addEventListener("click", clearResults);
-
+reload.addEventListener("click", buttonSubmitHandler);
