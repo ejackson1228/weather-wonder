@@ -284,7 +284,11 @@ var displaySearches = function() {
     });
 
 };
+if (savedCities === null) {
+    
+} else {
 displaySearches();
+};
 
 
 
