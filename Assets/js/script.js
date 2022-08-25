@@ -3,9 +3,6 @@ var cityButtonEl = document.getElementsByClassName("previously-searched");
 var locationLimit = 1;
 const searchedCities = [];
 var savedCities = JSON.parse(localStorage.getItem("cities"));
-// savedCities.forEach(function(cityObject) {
-//     displayCurrentConditions(cityObject.data);
-// });
 
 var getWeatherConditions = function(city){
     var city = city.toLowerCase();
@@ -22,7 +19,7 @@ var getWeatherConditions = function(city){
     })
     .then(function (data) {
         console.log(data);
-        // send city & it's data to display current conditions function
+        // send city & it's data to display current conditions, forecast
         displayCurrentConditions(city, data);
         displayForecast(city, data);
         // save this info to local storage
@@ -49,6 +46,7 @@ var getWeatherConditions = function(city){
     }
         localStorage.setItem("cities", JSON.stringify(savedCities));
     });
+    
 }
 
 var displayCurrentConditions = function (city, data) {
@@ -243,29 +241,27 @@ var displayForecast = function(city, data) {
 
 var formSubmitHandler = function(event) {
     // prevent page from refreshing
-    // event.preventDefault();
+    event.preventDefault();
     // get value from input element
     var cityName = cityInputEl.value.toLowerCase().trim();
     console.log(cityName);
     if (cityName) {
+        
         // pass cityName to getWeatherConditions function
         getWeatherConditions(cityName);
         // clear old form content
         cityInputEl.value = "";
-    } else {
-         //alert("Error: Please Enter a Valid City.");
-    };
+    } // if (cityName === "") {
+    //      alert("Error: Please Enter a Valid City.");
+    // };
 };
 
 var buttonSubmitHandler = function(e) {
     
     if (!e.target.matches("button")) {
         return
-        // pass name of city in button to getWeatherConditions function
-    }
-    // } else {
         
-    
+    }
     var btn = e.target;
     var cityName = btn.getAttribute("data-search");
     console.log(btn)
@@ -289,7 +285,6 @@ var displaySearches = function() {
 
 };
 displaySearches();
-
 
 
 
