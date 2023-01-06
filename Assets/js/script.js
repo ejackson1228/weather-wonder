@@ -10,7 +10,20 @@ const capitalize = function(string) {
         return word[0].toUpperCase() + word.substring(1);
     }).join(" ");
     return capitalizedName;
-}
+};
+
+const formatDateForecast = function(date) {
+    console.log(typeof date);
+    const preFormat = date.split(" ");
+    const newDate = preFormat[0] + " " + preFormat[1] + " " + preFormat[2] + "/" + preFormat[3];
+    return newDate;
+};
+
+const formatDateCurrent = function(date) {
+    const preFormat  = date.split(" ");
+    const newDate = preFormat[0] + " " + preFormat[1] + " " + preFormat[2] + "/" + preFormat[3] + " @ " + preFormat[4];
+    return newDate;
+};
 
 var getWeatherConditions = function(city){
     var city = city.toLowerCase();
@@ -58,7 +71,6 @@ var getWeatherConditions = function(city){
 }
 
 var displayCurrentConditions = function (city, data) {
-    console.log(typeof city, city);
     var currentHeader = document.createElement("h6");
     currentHeader.textContent = "Displaying current weather for: " + capitalize(city);
     currentHeader.id = "current-header";
@@ -68,7 +80,7 @@ var displayCurrentConditions = function (city, data) {
 
     
     var currentConditions = document.createElement("ul");
-    currentConditions.className = "card weather-lists";
+    currentConditions.className = "card bg-info col-3 text-center weather-lists";
     currentConditions.id  = "current-conditions";
     currentContainer.appendChild(currentConditions);
 
@@ -78,7 +90,7 @@ var displayCurrentConditions = function (city, data) {
     
     var currentDate = document.createElement("li");
     currentConditions.appendChild(currentDate);
-    currentDate.textContent = Date(data.current.dt * 1000); // <<< figure out how to input current date (moment.js?)
+    currentDate.textContent = formatDateCurrent(Date(data.current.dt * 1000)); // <<< figure out how to input current date (moment.js?)
 
     var currentTemp = document.createElement("li");
     currentConditions.appendChild(currentTemp);
@@ -132,7 +144,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate1 = document.createElement("li");
     forecastConditions1.appendChild(forecastDate1);
-    forecastDate1.textContent = new Date(data.daily[1].dt*1000); // << convert UNIX timestamp to js for date
+    forecastDate1.textContent = formatDateForecast(Date(data.daily[1].dt*1000)); // << convert UNIX timestamp to js for date
 
     var forecastTemp1 = document.createElement("li");
     forecastConditions1.appendChild(forecastTemp1);
@@ -157,7 +169,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate2 = document.createElement("li");
     forecastConditions2.appendChild(forecastDate2);
-    forecastDate2.textContent = new Date(data.daily[2].dt*1000);
+    forecastDate2.textContent = formatDateForecast(Date(data.daily[2].dt*1000));
 
     var forecastTemp2 = document.createElement("li");
     forecastConditions2.appendChild(forecastTemp2);
@@ -183,7 +195,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate3  = document.createElement("li");
     forecastConditions3.appendChild(forecastDate3);
-    forecastDate3.textContent = new Date(data.daily[3].dt*1000);
+    forecastDate3.textContent = formatDateForecast(Date(data.daily[3].dt*1000));
 
     var forecastTemp3 = document.createElement("li");
     forecastConditions3.appendChild(forecastTemp3);
@@ -209,7 +221,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate4 = document.createElement("li");
     forecastConditions4.appendChild(forecastDate4);
-    forecastDate4.textContent = new Date(data.daily[4].dt*1000);
+    forecastDate4.textContent = formatDateForecast(Date(data.daily[4].dt*1000));
 
     var forecastTemp4 = document.createElement("li");
     forecastConditions4.appendChild(forecastTemp4);
@@ -235,7 +247,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate5 = document.createElement("li");
     forecastConditions5.appendChild(forecastDate5);
-    forecastDate5.textContent = new Date(data.daily[5].dt*1000);
+    forecastDate5.textContent = formatDateForecast(Date(data.daily[5].dt*1000));
 
     var forecastTemp5= document.createElement("li");
     forecastConditions5.appendChild(forecastTemp5);
@@ -261,9 +273,7 @@ var formSubmitHandler = function(event) {
         getWeatherConditions(cityName);
         // clear old form content
         cityInputEl.value = "";
-    } // if (cityName === "") {
-    //      alert("Error: Please Enter a Valid City.");
-    // };
+    }
 };
 
 var buttonSubmitHandler = function(e) {
@@ -281,7 +291,7 @@ var displaySearches = function() {
     savedCities.forEach(function(object) {
         console.log(object);
         var searchedButton = document.createElement("li");  // <<<<< need to get appropriate name for each button 
-        searchedButton.innerHTML = "<button type='button' data-search='" + object.name + "' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + capitalize(object.name) + "</button>";
+        searchedButton.innerHTML = "<button type='button' name='prev-searched' data-search='" + object.name + "' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + capitalize(object.name) + "</button>";
 
     
 
@@ -289,11 +299,10 @@ var displaySearches = function() {
     });
 
 };
-if (savedCities === null) {
-    
-} else {
+
+if (savedCities !== null) {
     displaySearches();
-};
+    }
 
 
 

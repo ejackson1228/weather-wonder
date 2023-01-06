@@ -3,20 +3,33 @@
     list-style: none !important;
 }
 
+:root {
+    background-color: lightblue;
+}
+
+.app-header {
+    width: auto !important;
+}
+
 .city-form {
     border-bottom: solid black;
 }
 
 .current-weather {
-    background-color: yellow !important;
+    background-color: #FFF999 !important;
+    border-radius: 10px;
+    justify-content: center;
 }
 
 .forecast-weather {
     background-color: blue;
+    border-radius: 10px;
+    justify-content: center;
 }
 
 .current-header, .forecast-header {
     font: normal no-common-ligatures bold condensed medium normal "Gill sans", sans-serif;
 }
+
 
 
