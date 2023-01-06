@@ -1,8 +1,22 @@
+* {
+    list-style-type: none !important;
+    list-style: none !important;
+}
+
 .city-form {
     border-bottom: solid black;
 }
 
-.forecast-list {
-    list-style-type: none;
-    color: blue;
+.current-weather {
+    background-color: yellow !important;
 }
+
+.forecast-weather {
+    background-color: blue;
+}
+
+.current-header, .forecast-header {
+    font: normal no-common-ligatures bold condensed medium normal "Gill sans", sans-serif;
+}
+
+

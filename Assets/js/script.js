@@ -4,6 +4,14 @@ var locationLimit = 1;
 const searchedCities = [];
 var savedCities = JSON.parse(localStorage.getItem("cities"));
 
+const capitalize = function(string) {
+    const words = string.split(" ");
+    const capitalizedName = words.map((word) => {
+        return word[0].toUpperCase() + word.substring(1);
+    }).join(" ");
+    return capitalizedName;
+}
+
 var getWeatherConditions = function(city){
     var city = city.toLowerCase();
     fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&limit=' + locationLimit + '&appid=ef60850d396977a8d1f7bb3a7e730be4')
@@ -24,9 +32,9 @@ var getWeatherConditions = function(city){
         displayForecast(city, data);
         // save this info to local storage
         var savedCities = JSON.parse(localStorage.getItem("cities"));
-        if (!savedCities) 
+        if (!savedCities) {
             savedCities = [];
-
+        }
 
         var alreadyInStorage = false;
         savedCities.forEach(function(item) {
@@ -50,15 +58,17 @@ var getWeatherConditions = function(city){
 }
 
 var displayCurrentConditions = function (city, data) {
+    console.log(typeof city, city);
     var currentHeader = document.createElement("h6");
-    currentHeader.textContent = "Displaying Current Weather for: " + city;
+    currentHeader.textContent = "Displaying current weather for: " + capitalize(city);
     currentHeader.id = "current-header";
+    currentHeader.className = "current-header";
     var currentContainer = document.getElementById("current-weather");
     currentContainer.appendChild(currentHeader);
 
     
     var currentConditions = document.createElement("ul");
-    currentConditions.className = "card";
+    currentConditions.className = "card weather-lists";
     currentConditions.id  = "current-conditions";
     currentContainer.appendChild(currentConditions);
 
@@ -72,19 +82,19 @@ var displayCurrentConditions = function (city, data) {
 
     var currentTemp = document.createElement("li");
     currentConditions.appendChild(currentTemp);
-    currentTemp.textContent = data.current.temp + "°F";
+    currentTemp.textContent = "Temperature: " + data.current.temp + "°F";
     
     var currentHumidity = document.createElement("li");
     currentConditions.appendChild(currentHumidity);
-    currentHumidity.textContent = data.current.humidity + " kg/m^3";
+    currentHumidity.textContent = "Humidity: " + data.current.humidity + " kg/m^3";
 
     var currentWind = document.createElement("li");
     currentConditions.appendChild(currentWind);
-    currentWind.textContent = data.current.wind_speed + " MPH";
+    currentWind.textContent = "Wind speed: " + data.current.wind_speed + " MPH";
     
     var currentUVI = document.createElement("li");
     currentConditions.appendChild(currentUVI);
-    currentUVI.textContent = data.current.uvi;
+    currentUVI.textContent = "UVI: " + data.current.uvi;
 
     if (data.current.uvi < 3) {
         currentUVI.className = "text-success";
@@ -100,8 +110,9 @@ var displayCurrentConditions = function (city, data) {
 
 var displayForecast = function(city, data) {
     var forecastHeader = document.createElement("h6");
-    forecastHeader.textContent = "Displaying Forecast for: " + city;
+    forecastHeader.textContent = "Displaying forecast for: " + capitalize(city);
     forecastHeader.id = "forecast-header";
+    forecastHeader.className = "forecast-header";
     var forecastContainerIndex = document.getElementById("forecast");
     forecastContainerIndex.appendChild(forecastHeader);
     
@@ -246,7 +257,6 @@ var formSubmitHandler = function(event) {
     var cityName = cityInputEl.value.toLowerCase().trim();
     console.log(cityName);
     if (cityName) {
-        
         // pass cityName to getWeatherConditions function
         getWeatherConditions(cityName);
         // clear old form content
@@ -259,14 +269,10 @@ var formSubmitHandler = function(event) {
 var buttonSubmitHandler = function(e) {
     
     if (!e.target.matches("button")) {
-        return
-        
+        return;
     }
     var btn = e.target;
     var cityName = btn.getAttribute("data-search");
-    console.log(btn)
-    
-    console.log(cityName);// JSON.stringify(cityButtonEl.textContent);
     getWeatherConditions(cityName);
 }
 
@@ -274,12 +280,11 @@ var displaySearches = function() {
     var buttonList = document.getElementById("previous-cities");
     savedCities.forEach(function(object) {
         console.log(object);
-        // var city = JSON.stringify(object.name);
-        // if (city) {
-            var searchedButton = document.createElement("li");  // <<<<< need to get appropriate name for each button 
-            searchedButton.innerHTML = "<button type='button' data-search='" + object.name + "' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + object.name + "</button>";
-           // searchedButton.setAttribute("data-search", object.name);
-        // }
+        var searchedButton = document.createElement("li");  // <<<<< need to get appropriate name for each button 
+        searchedButton.innerHTML = "<button type='button' data-search='" + object.name + "' class='previously-searched btn btn-primary btn-sm col-12 m-1'>" + capitalize(object.name) + "</button>";
+
+    
+
         buttonList.append(searchedButton);
     });
 
@@ -287,7 +292,7 @@ var displaySearches = function() {
 if (savedCities === null) {
     
 } else {
-displaySearches();
+    displaySearches();
 };
 
 
@@ -305,13 +310,6 @@ var clearResults = function() {
     var clearForecastHeader = document.querySelector("#forecast-header")
     clearForecastHeader.remove();
 }
-
-
-
-
-
-
-
 
 var searchedCity = document.querySelector("#search-form");
 var clearContent = document.querySelector("#clear-content")
