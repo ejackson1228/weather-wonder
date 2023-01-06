@@ -19,12 +19,14 @@
     background-color: #FFF999 !important;
     border-radius: 10px;
     justify-content: center;
+    text-align: center;
 }
 
 .forecast-weather {
     background-color: blue;
     border-radius: 10px;
     justify-content: center;
+    text-align: center;
 }
 
 .current-header, .forecast-header {

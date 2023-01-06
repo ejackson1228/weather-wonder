@@ -5,22 +5,23 @@ const searchedCities = [];
 var savedCities = JSON.parse(localStorage.getItem("cities"));
 
 const capitalize = function(string) {
-    const words = string.split(" ");
+    const words = string.split(' ');
     const capitalizedName = words.map((word) => {
         return word[0].toUpperCase() + word.substring(1);
     }).join(" ");
     return capitalizedName;
 };
 
-const formatDateForecast = function(date) {
-    console.log(typeof date);
-    const preFormat = date.split(" ");
-    const newDate = preFormat[0] + " " + preFormat[1] + " " + preFormat[2] + "/" + preFormat[3];
+const formatDateForecast = function(jsTime) {
+    console.log(jsTime);
+    var date = jsTime.toLocaleDateString();
+    var time = jsTime.toLocaleTimeString();
+    var newDate = date + ' ' + time;
     return newDate;
 };
 
 const formatDateCurrent = function(date) {
-    const preFormat  = date.split(" ");
+    const preFormat = date.split(" ");
     const newDate = preFormat[0] + " " + preFormat[1] + " " + preFormat[2] + "/" + preFormat[3] + " @ " + preFormat[4];
     return newDate;
 };
@@ -72,7 +73,7 @@ var getWeatherConditions = function(city){
 
 var displayCurrentConditions = function (city, data) {
     var currentHeader = document.createElement("h6");
-    currentHeader.textContent = "Displaying current weather for: " + capitalize(city);
+    currentHeader.textContent = "Current: " + capitalize(city);
     currentHeader.id = "current-header";
     currentHeader.className = "current-header";
     var currentContainer = document.getElementById("current-weather");
@@ -122,7 +123,7 @@ var displayCurrentConditions = function (city, data) {
 
 var displayForecast = function(city, data) {
     var forecastHeader = document.createElement("h6");
-    forecastHeader.textContent = "Displaying forecast for: " + capitalize(city);
+    forecastHeader.textContent = "Forecast: " + capitalize(city);
     forecastHeader.id = "forecast-header";
     forecastHeader.className = "forecast-header";
     var forecastContainerIndex = document.getElementById("forecast");
@@ -144,7 +145,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate1 = document.createElement("li");
     forecastConditions1.appendChild(forecastDate1);
-    forecastDate1.textContent = formatDateForecast(Date(data.daily[1].dt*1000)); // << convert UNIX timestamp to js for date
+    forecastDate1.textContent = formatDateForecast(new Date(data.daily[1].dt*1000)); // << convert UNIX timestamp to js for date
 
     var forecastTemp1 = document.createElement("li");
     forecastConditions1.appendChild(forecastTemp1);
@@ -169,7 +170,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate2 = document.createElement("li");
     forecastConditions2.appendChild(forecastDate2);
-    forecastDate2.textContent = formatDateForecast(Date(data.daily[2].dt*1000));
+    forecastDate2.textContent = formatDateForecast(new Date(data.daily[2].dt*1000));
 
     var forecastTemp2 = document.createElement("li");
     forecastConditions2.appendChild(forecastTemp2);
@@ -195,7 +196,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate3  = document.createElement("li");
     forecastConditions3.appendChild(forecastDate3);
-    forecastDate3.textContent = formatDateForecast(Date(data.daily[3].dt*1000));
+    forecastDate3.textContent = formatDateForecast(new Date(data.daily[3].dt*1000));
 
     var forecastTemp3 = document.createElement("li");
     forecastConditions3.appendChild(forecastTemp3);
@@ -221,7 +222,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate4 = document.createElement("li");
     forecastConditions4.appendChild(forecastDate4);
-    forecastDate4.textContent = formatDateForecast(Date(data.daily[4].dt*1000));
+    forecastDate4.textContent = formatDateForecast(new Date(data.daily[4].dt*1000));
 
     var forecastTemp4 = document.createElement("li");
     forecastConditions4.appendChild(forecastTemp4);
@@ -247,7 +248,7 @@ var displayForecast = function(city, data) {
 
     var forecastDate5 = document.createElement("li");
     forecastConditions5.appendChild(forecastDate5);
-    forecastDate5.textContent = formatDateForecast(Date(data.daily[5].dt*1000));
+    forecastDate5.textContent = formatDateForecast(new Date(data.daily[5].dt*1000));
 
     var forecastTemp5= document.createElement("li");
     forecastConditions5.appendChild(forecastTemp5);
